@@ -1,7 +1,7 @@
 openapi: 3.0.0
 servers:
-  - url: 'https://demo.spreecommerce.org'
-    description: demo
+  - url: 'https://better-meee.herokuapp.com'
+    description: Better mee store
   - url: 'http://localhost:3000'
     description: localhost
 info:
@@ -47,7 +47,7 @@ paths:
                       id: '1'
                       type: user
                       attributes:
-                        email: spree@example.com
+                        email: healmeee@bettermeegroup.com
                         store_credits: 0
                         completed_orders: 0
                       relationships:
@@ -63,19 +63,19 @@ paths:
                       - id: '2'
                         type: address
                         attributes:
-                          firstname: Destiny
-                          lastname: Maggio
-                          address1: 12775 Runolfsdottir Greens
-                          address2: Apt. 704
-                          city: Kochmouth
-                          zipcode: '16804'
-                          phone: 1-257-860-8433
-                          state_name: New York
+                          firstname: Better Mee
+                          lastname: Group
+                          address1: 
+                          address2: 
+                          city: 
+                          zipcode: '30000'
+                          phone: 
+                          state_name: 
                           company: null
-                          country_name: United States
-                          country_iso3: USA
-                          country_iso: US
-                          state_code: NY
+                          country_name: Thailand
+                          country_iso3: TH
+                          country_iso: TH
+                          state_code: TH
                       - id: '1'
                         type: address
                         attributes:
@@ -129,13 +129,13 @@ paths:
                   properties:
                     email:
                       type: string
-                      example: john@snow.org
+                      example: healmeee@bettermeegroup.com
                     password:
                       type: string
-                      example: spree123
+                      example: adminhm
                     password_confirmation:
                       type: string
-                      example: spree123
+                      example: adminhm
         description: ''
       responses:
         '200':

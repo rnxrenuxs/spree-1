@@ -42,7 +42,7 @@ module Spree
     preference :binary_inventory_cache, :boolean, default: false # only invalidate product cache when a stock item changes whether it is in_stock
     preference :checkout_zone, :string, default: nil # replace with the name of a zone if you would like to limit the countries
     preference :company, :boolean, default: false # Request company field for billing and shipping addr
-    preference :currency, :string, default: 'USD'
+    preference :currency, :string, default: 'THB'
     preference :default_country_id, :integer
     preference :disable_sku_validation, :boolean, default: false # when turned off disables the built-in SKU uniqueness validation
     preference :expedited_exchanges, :boolean, default: false # NOTE this requires payment profiles to be supported on your gateway of choice as well as a delayed job handler to be configured with activejob. kicks off an exchange shipment upon return authorization save. charge customer if they do not return items within timely manner.
