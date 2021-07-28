@@ -59,10 +59,17 @@ module Spree
     self.whitelisted_ransackable_associations = %w[country state user]
 
     def self.build_default
+      ActiveSupport::Deprecation.warn(<<-DEPRECATION, caller)
+        `Address#build_default` is deprecated and will be removed in Spree 5.0.
+        Please use standard rails `Address.new(country: current_store.default_country)`
+      DEPRECATION
       new(country: Spree::Country.default)
     end
 
     def self.default(user = nil, kind = 'bill')
+      ActiveSupport::Deprecation.warn(<<-DEPRECATION, caller)
+        `Address#default` is deprecated and will be removed in Spree 5.0.
+      DEPRECATION
       if user && user_address = user.public_send(:"#{kind}_address")
         user_address.clone
       else
@@ -216,7 +223,7 @@ module Spree
     end
 
     def postal_code_validate
-      return if country.blank? || country_iso.blank? || !require_zipcode?
+      return if country.blank? || country_iso.blank? || !require_zipcode? || zipcode.blank?
       return unless ::ValidatesZipcode::CldrRegexpCollection::ZIPCODES_REGEX.keys.include?(country_iso.upcase.to_sym)
 
       formatted_zip = ::ValidatesZipcode::Formatter.new(

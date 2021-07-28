@@ -1,13 +1,23 @@
 module Spree
   module Products
     class Find
-      def initialize(scope:, params:, current_currency:)
+      def initialize(scope:, params:, current_currency: nil)
         @scope = scope
+
+        ActiveSupport::Deprecation.warn('`current_currency` param is deprecated and will be removed in Spree 5') if current_currency
+
+        if current_currency.present?
+          ActiveSupport::Deprecation.warn(<<-DEPRECATION, caller)
+            `current_currency` param is deprecated and will be removed in Spree 5.
+            Please pass `:currency` in `params` hash instead.
+          DEPRECATION
+        end
 
         @ids              = String(params.dig(:filter, :ids)).split(',')
         @skus             = String(params.dig(:filter, :skus)).split(',')
+        @store            = params[:store] || Spree::Store.default
         @price            = map_prices(String(params.dig(:filter, :price)).split(','))
-        @currency         = current_currency
+        @currency         = current_currency || params.dig(:filter, :currency) || params[:currency]
         @taxons           = taxon_ids(params.dig(:filter, :taxons))
         @concat_taxons    = taxon_ids(params.dig(:filter, :concat_taxons))
         @name             = params.dig(:filter, :name)
@@ -40,7 +50,7 @@ module Spree
       private
 
       attr_reader :ids, :skus, :price, :currency, :taxons, :concat_taxons, :name, :options,
-                  :option_value_ids, :scope, :sort_by, :deleted, :discontinued, :properties
+                  :option_value_ids, :scope, :sort_by, :deleted, :discontinued, :properties, :store
 
       def ids?
         ids.present?
@@ -198,6 +208,10 @@ module Spree
           else
             products
           end
+        when 'name-a-z'
+          products.order(name: :asc)
+        when 'name-z-a'
+          products.order(name: :desc)
         when 'newest-first'
           products.order(available_on: :desc)
         when 'price-high-to-low'
@@ -230,7 +244,7 @@ module Spree
       def taxon_ids(taxons_ids)
         return if taxons_ids.nil? || taxons_ids.to_s.blank?
 
-        taxons = Spree::Taxon.where(id: taxons_ids.to_s.split(','))
+        taxons = store.taxons.where(id: taxons_ids.to_s.split(','))
         taxons.map(&:cached_self_and_descendants_ids).flatten.compact.uniq.map(&:to_s)
       end
     end

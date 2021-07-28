@@ -84,8 +84,6 @@ Spree::Core::Engine.add_routes do
         put :approve
         put :cancel
         put :resume
-        get :store
-        put :set_store
         get :channel
         put :set_channel
       end
@@ -188,6 +186,10 @@ Spree::Core::Engine.add_routes do
       resources :store_credits
     end
 
+    resources :cms_pages do
+      resources :cms_sections, except: :index
+    end
+
     resources :menus do
       resources :menu_items, except: :index do
         member do
@@ -195,6 +197,8 @@ Spree::Core::Engine.add_routes do
         end
       end
     end
+
+    get '/forbidden', to: 'admin/errors#forbidden', as: :forbidden
   end
 
   spree_path = Rails.application.routes.url_helpers.try(:spree_path, trailing_slash: true) || '/'

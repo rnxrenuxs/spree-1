@@ -21,7 +21,8 @@
 module Spree
   class Product < Spree::Base
     extend FriendlyId
-    include Spree::ProductScopes
+    include ProductScopes
+    include MultiStoreResource
 
     friendly_id :slug_candidates, use: :history
 
@@ -79,7 +80,7 @@ module Spree
     has_many :variant_images, -> { order(:position) }, source: :images, through: :variants_including_master
     has_many :variant_images_without_master, -> { order(:position) }, source: :images, through: :variants
 
-    has_many :store_products, class_name: 'Spree::StoreProduct', dependent: :destroy
+    has_many :store_products, class_name: 'Spree::StoreProduct'
     has_many :stores, through: :store_products, class_name: 'Spree::Store'
 
     after_create :add_associations_from_prototype
@@ -99,6 +100,7 @@ module Spree
     after_save :reset_memoized_data
     after_commit :reset_memoized_data
 
+    before_validation :downcase_slug
     before_validation :normalize_slug, on: :update
     before_validation :validate_master
 
@@ -112,7 +114,7 @@ module Spree
       validates :price, if: :requires_price?
     end
 
-    validates :slug, presence: true, uniqueness: { allow_blank: true, case_sensitive: false }
+    validates :slug, presence: true, uniqueness: { allow_blank: true, case_sensitive: true }
     validate :discontinue_on_must_be_later_than_available_on, if: -> { available_on && discontinue_on }
 
     attr_accessor :option_values_hash
@@ -127,7 +129,7 @@ module Spree
 
     [
       :sku, :price, :currency, :weight, :height, :width, :depth, :is_master,
-      :cost_currency, :price_in, :amount_in, :cost_price, :compare_at_price
+      :cost_currency, :price_in, :amount_in, :cost_price, :compare_at_price, :compare_at_amount_in
     ].each do |method_name|
       delegate method_name, :"#{method_name}=", to: :find_or_build_master
     end
@@ -498,6 +500,10 @@ module Spree
 
     def requires_shipping_category?
       true
+    end
+
+    def downcase_slug
+      slug&.downcase!
     end
   end
 end

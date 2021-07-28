@@ -105,7 +105,7 @@ describe Spree::MenuItem, type: :model do
   end
 
   describe '#link' do
-    let(:product) { create(:product) }
+    let(:product) { create(:product, stores: [store]) }
     let(:taxon) { create(:taxon) }
     let(:item_url) { create(:menu_item, name: 'URL To Random Site', item_type: 'Link', menu: menu, linked_resource_type: 'URL', destination: 'https://some-other-website.com') }
     let(:item_empty_url) { create(:menu_item, name: 'URL To Random Site', item_type: 'Link', menu: menu, linked_resource_type: 'URL', destination: nil) }
@@ -172,7 +172,7 @@ describe Spree::MenuItem, type: :model do
     end
 
     it 'is level 1' do
-      expect(item_x.level).to eql 1
+      expect(item_x.level).to be 1
     end
   end
 

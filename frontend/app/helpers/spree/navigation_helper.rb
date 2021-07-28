@@ -35,7 +35,6 @@ module Spree
       keys = base_cache_key + [
         current_store.cache_key_with_version,
         spree_menu(section)&.cache_key_with_version,
-        Spree::Config[:logo],
         stores&.maximum(:updated_at),
         section
       ]
@@ -43,7 +42,7 @@ module Spree
     end
 
     def main_nav_image(image_path, title = '')
-      image_url = asset_path(asset_exists?(image_path) ? image_path : 'noimage/plp.png')
+      image_url = asset_path(asset_exists?(image_path) ? image_path : 'noimage/plp.svg')
 
       lazy_image(
         src: image_url,
@@ -88,7 +87,14 @@ module Spree
         rel = opts[:rel] || 'noopener noreferrer'
       end
 
-      link_opts = { target: target, rel: rel, class: opts[:class], id: opts[:id], data: opts[:data], aria: opts[:aria] }
+      active_class = if request && current_page?(spree_localized_link(item))
+                       "active #{opts[:class]}"
+                     else
+                       opts[:class]
+                     end
+
+      link_opts = { target: target, rel: rel, class: active_class, id: opts[:id], data: opts[:data], aria: opts[:aria] }
+
       if block_given?
         link_to spree_localized_link(item), link_opts, &block
       else
