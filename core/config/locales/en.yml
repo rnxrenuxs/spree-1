@@ -184,6 +184,12 @@ en:
       spree/address:
         one: Address
         other: Addresses
+      spree/cms_page:
+        one: Page
+        other: Pages
+      spree/cms_section:
+        one: Section
+        other: Sections
       spree/country:
         one: Country
         other: Countries
@@ -880,6 +886,7 @@ en:
     created_by: Created By
     credit: Credit
     credit_card: Credit Card
+    credit_card_remove_confirmation: Are you sure you want to delete the credit card?
     credit_cards: Credit Cards
     credit_owed: Credit Owed
     credited: Credited
